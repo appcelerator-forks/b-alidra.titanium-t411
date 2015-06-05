@@ -46,7 +46,7 @@ t411.prototype.requestToken = function(callback) {
 t411.prototype.search = function(options, callback) {
 	var term		= options.term || "";
 	var category	= options.category || "";
-	var query = "/torrents/search/" +  Ti.Network.encodeURIComponent(term) + '&limit=100';
+	var query = "/torrents/search/" +  Ti.Network.encodeURIComponent(term) + '?limit=100&order=seeders&type=desc';
 	if (!underscore.isEmpty(category))
 		query += "&cid=" + category;
 		
