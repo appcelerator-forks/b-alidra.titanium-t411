@@ -7,17 +7,17 @@ var t411 = function() {
 	this.username	= 'cas74';
 	this.password	= 'fl1Fk88I';
 	this.token		= Ti.App.Properties.getString('t411_token');
-	this.token_date	= Ti.App.Properties.getInt('t411_token_date');
+	this.token_date	= Ti.App.Properties.getString('t411_token_date');
 };
 
 t411.prototype.checkToken = function() {
 	this.token		= Ti.App.Properties.getString('t411_token');
-	this.token_date	= Ti.App.Properties.getInt('t411_token_date');
+	this.token_date	= Ti.App.Properties.getString('t411_token_date');
 	
-	return true;
-		!underscore.isEmpty(this.token);/* &&
+	return 
+		!underscore.isEmpty(this.token) &&
 		!underscore.isEmpty(this.token_date) &&
-		((new Date()).getTime() / 1000) - this.token_date < 90*24*60*60;*/
+		underscore.now() / 1000 - this.token_date < 90*24*60*60;
 };
 
 t411.prototype.requestToken = function(callback) {
@@ -34,9 +34,9 @@ t411.prototype.requestToken = function(callback) {
 			callback && callback(err);
 		else {
 			self.token = response.token;
-			self.token_date = (new Date()).getTime() / 1000;
+			self.token_date = underscore.now() / 1000;
 			Ti.App.Properties.setString('t411_token', self.token);
-			Ti.App.Properties.setInt('t411_token_date', self.token_date);
+			Ti.App.Properties.setString('t411_token_date', self.token_date);
 			
 			callback && callback(null, response);
 		}
@@ -71,7 +71,7 @@ t411.prototype.query = function(options, callback) {
 		return;
 	}
 
-	if (!this.checkToken() && options.query != '/auth') {
+	if (options.query != '/auth' && !this.checkToken()) {
 		Ti.API.info('Getting new token');
 		var self = this;
 		this.requestToken(function(err, response) {
@@ -80,6 +80,8 @@ t411.prototype.query = function(options, callback) {
 			else
 				self.query(options, callback);
 		});
+		
+		return false;
 	}
 	
     var method, status, xhr, raw;
