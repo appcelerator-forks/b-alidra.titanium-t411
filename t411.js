@@ -1,5 +1,5 @@
 var underscore 	= require('alloy/underscore'),
-	config 		= require(WPATH('config'));
+	config 		= require('t411/config');
 
 var t411 = function(user, password) {
 	this.base_uri	= "https://api.t411.io";
