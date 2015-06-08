@@ -1,11 +1,12 @@
-var underscore = require('alloy/underscore');
+var underscore 	= require('alloy/underscore'),
+	config 		= require(WPATH('config'));
 
-var t411 = function() {
+var t411 = function(user, password) {
 	this.base_uri	= "https://api.t411.io";
     this.timeout 	= 5000;
     
-	this.username	= 'cas74';
-	this.password	= 'fl1Fk88I';
+	this.username	= user || config.user;
+	this.password	= password || config.password;
 	Ti.App.Properties.setString('t411_token', null);
 	Ti.App.Properties.setString('t411_token_date', null);
 	this.token		= Ti.App.Properties.getString('t411_token');

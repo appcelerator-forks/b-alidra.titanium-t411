@@ -1,0 +1,4 @@
+module.exports = {
+	"user": "YOUR_T411_USERNAME",
+	"pssword": "YOUR_T411_PASSWORD"
+};
