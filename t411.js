@@ -1,5 +1,4 @@
-var underscore 	= require('alloy/underscore'),
-	config 		= require('t411/config');
+var config 		= require('t411/config');
 
 var t411 = function(user, password) {
 	this.base_uri	= "https://api.t411.io";
@@ -18,12 +17,12 @@ t411.prototype.checkToken = function() {
 	this.token_date	= Ti.App.Properties.getString('t411_token_date');
 	
 	Ti.API.info('checkToken');
-	Ti.API.info(underscore.now() / 1000);
+	Ti.API.info(_.now() / 1000);
 	Ti.API.info(this.token_date);
 	var res =  
-		!underscore.isEmpty(this.token) &&
-		!underscore.isEmpty(this.token_date) &&
-		underscore.now() / 1000 - this.token_date < 90*24*60*60;
+		!_.isEmpty(this.token) &&
+		!_.isEmpty(this.token_date) &&
+		_.now() / 1000 - this.token_date < 90*24*60*60;
 	
 	if (res)
 		Ti.API.info('OK');
@@ -46,7 +45,7 @@ t411.prototype.requestToken = function(callback) {
 			callback && callback(err);
 		else {
 			self.token = response.token;
-			self.token_date = underscore.now() / 1000;
+			self.token_date = _.now() / 1000;
 			Ti.App.Properties.setString('t411_token', self.token);
 			Ti.App.Properties.setString('t411_token_date', self.token_date);
 			Ti.API.info('requestToken');
@@ -61,7 +60,7 @@ t411.prototype.search = function(options, callback) {
 	var term		= options.term || "";
 	var category	= options.category || "";
 	var query = "/torrents/search/" +  Ti.Network.encodeURIComponent(term) + '?limit=100&order=seeders&type=desc';
-	if (!underscore.isEmpty(category))
+	if (!_.isEmpty(category))
 		query += "&cid=" + category;
 		
 	this.query({ query: query }, callback);	
@@ -112,7 +111,7 @@ t411.prototype.query = function(options, callback) {
 
     xhr.open(method, this.base_uri + options.query, true);
 
-    if (!underscore.isEmpty(this.token))
+    if (!_.isEmpty(this.token))
     	xhr.setRequestHeader('Authorization', this.token);
     
     xhr.timeout = this.timeout;
