@@ -1,13 +1,11 @@
 var config 		= require('t411/config');
 
 var t411 = function(user, password) {
-	this.base_uri	= "https://api.t411.io";
+	this.base_uri	= "https://api.t411.in";
     this.timeout 	= 5000;
     
 	this.username	= user || config.user;
 	this.password	= password || config.password;
-	Ti.App.Properties.setString('t411_token', null);
-	Ti.App.Properties.setString('t411_token_date', null);
 	this.token		= Ti.App.Properties.getString('t411_token');
 	this.token_date	= Ti.App.Properties.getString('t411_token_date');
 };
@@ -16,18 +14,11 @@ t411.prototype.checkToken = function() {
 	this.token		= Ti.App.Properties.getString('t411_token');
 	this.token_date	= Ti.App.Properties.getString('t411_token_date');
 	
-	Ti.API.info('checkToken');
-	Ti.API.info(_.now() / 1000);
-	Ti.API.info(this.token_date);
 	var res =  
 		!_.isEmpty(this.token) &&
 		!_.isEmpty(this.token_date) &&
-		_.now() / 1000 - this.token_date < 90*24*60*60;
+		((_.now() / 1000 - this.token_date) < 90*24*60*60);
 	
-	if (res)
-		Ti.API.info('OK');
-	else
-		Ti.API.info('NON OK');	
 	return res;
 };
 
@@ -48,8 +39,6 @@ t411.prototype.requestToken = function(callback) {
 			self.token_date = _.now() / 1000;
 			Ti.App.Properties.setString('t411_token', self.token);
 			Ti.App.Properties.setString('t411_token_date', self.token_date);
-			Ti.API.info('requestToken');
-			Ti.API.info(Ti.App.Properties.getString('t411_token_date'));
 			
 			callback && callback(null, response);
 		}
@@ -111,7 +100,7 @@ t411.prototype.query = function(options, callback) {
 
     xhr.open(method, this.base_uri + options.query, true);
 
-    if (!_.isEmpty(this.token))
+    if (options.query != '/auth' && !_.isEmpty(this.token))
     	xhr.setRequestHeader('Authorization', this.token);
     
     xhr.timeout = this.timeout;
